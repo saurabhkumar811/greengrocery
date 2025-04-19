@@ -60,7 +60,7 @@ const Navbar = () => {
 
 <button onClick={() => open ? setOpen(false) : setOpen(true)} aria-label="Menu" className="sm:hidden">
     {/* Menu Icon SVG */}
-    <img src={assets.menu_icon} alt="menu" />
+    <img  src={assets.menu_icon} alt="menu" />
 </button>
 
 {/* Mobile Menu */}
