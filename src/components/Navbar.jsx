@@ -6,7 +6,7 @@ import { useAppContext } from '../context/AppContext'
 const Navbar = () => {
 
     const [open, setOpen] = useState(false)
-    const {navigate ,user,setUser , setShowLoginForm}  = useAppContext()
+    const {navigate ,user,setUser , setShowUserLogin}  = useAppContext()
 
      const logout = async ()=>{
          setUser(null)
@@ -41,7 +41,9 @@ const Navbar = () => {
      <div>
         {
         !user ? 
-        (  <button className="cursor-pointer px-8 py-2 bg-primary hover:bg-primary-dull transition text-white rounded-full">
+        (  <button onClick={()=>{
+            setShowUserLogin(true);  
+        }}  className="cursor-pointer px-8 py-2 bg-primary hover:bg-primary-dull transition text-white rounded-full">
             Login
         </button>) :
         (<div  className='relative group'>
@@ -77,7 +79,10 @@ const Navbar = () => {
         
         {
           !user ? 
-          (<button onClick={()=>{setOpen(false) ; setShowLoginForm(true)}} className="cursor-pointer px-6 py-2 mt-2 bg-primary 
+          (<button onClick={()=>{   
+            setOpen(false) ; 
+            setShowUserLogin(true)}} 
+            className="cursor-pointer px-6 py-2 mt-2 bg-primary 
           hover:bg-primary-dull transition text-white rounded-full text-sm">
             Login
         </button>) : 

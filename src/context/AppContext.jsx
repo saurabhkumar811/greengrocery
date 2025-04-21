@@ -9,9 +9,9 @@ export const AppContextProvider = ({children})=>{
     const currency = import.meta.VITE_CURRENCY
   
     const navigate = useNavigate()
-    const [user,setUser] = useState(true)
+    const [user,setUser] = useState(false)
     const [isSeller , setIsSeller] = useState(false)
-    const [showLoginForm , setShowLoginForm] = useState(false)
+    const [showUserLogin , setShowUserLogin] = useState(false)
     const [products , setProducts] = useState([])
     const [ cartItems , setCartItems] = useState({})
 
@@ -63,7 +63,7 @@ export const AppContextProvider = ({children})=>{
           toast.success("Removed from Cart")
     }
 
-    const value = {navigate,user,setUser,isSeller,setIsSeller , showLoginForm , setShowLoginForm , products , cartItems ,
+    const value = {navigate,user,setUser,isSeller,setIsSeller , showUserLogin , setShowUserLogin , products , cartItems ,
        addToCart , updateCartItem , removeCartItem
     }
 
