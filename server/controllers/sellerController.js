@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 
+
 //login   /api/seller/login
 export const sellerLogin = async (req,res)=>{
 
@@ -12,7 +13,7 @@ export const sellerLogin = async (req,res)=>{
 
      if( email === process.env.SELLER_EMAIL && password === process.env.SELLER_PASSWORD)
      {
-             const token = jwt.sign({id : user._id} , process.env.JWT_SECRET , {expiresIn : '7d'} )
+             const token = jwt.sign({id : 'seller'} , process.env.JWT_SECRET , {expiresIn : '7d'} )
      
              res.cookie('sellerToken' , token , {
                  httpOnly : true ,
@@ -58,7 +59,7 @@ export const sellerLogout = async (req,res) =>{
        res.clearCookie('sellerToken' , {
         httpOnly : true ,
         secure : process.env.NODE_ENV === 'production',
-        sameSite : process.env.NODE_ENV === 'producion' ? 'none' : 'strict'
+        sameSite : process.env.NODE_ENV === 'production' ? 'none' : 'strict'
        })
 
        return res.json({success : true , message : "Logged Out"})

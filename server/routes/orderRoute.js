@@ -1,7 +1,6 @@
-import { getAllOrders, getUserOrders, placeOrderCOD } from "../controllers/orderConroller"
+import { getAllOrders, getUserOrders, placeOrderCOD } from "../controllers/orderConroller.js"
 import express from 'express'
-import authUser from "../middlewares/authUser"
-import authSeller from "../middlewares/authSeller"
+import authUser from "../middlewares/authUser.js"
 
 const  orderRouter =  express.Router()
 

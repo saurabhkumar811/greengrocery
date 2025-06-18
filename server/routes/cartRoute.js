@@ -1,5 +1,5 @@
 import express from 'express'
-import { updateCart } from "../controllers/cartController"
+import { updateCart } from "../controllers/cartController.js"
 
 
 const cartRouter = express.Router()
