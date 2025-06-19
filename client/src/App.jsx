@@ -18,6 +18,7 @@ import AddProduct from './pages/seller/AddProduct'
 import ProductList from './pages/seller/ProductList'
 import Orders from './pages/seller/Orders'
 import Loading from './components/Loading'
+import Chatbot from './components/Chatbot';
 
 
 const App = () => {
@@ -51,6 +52,7 @@ const App = () => {
          </Routes>
        </div>
        {!isSellerPath && <Footer/>}
+       {!isSellerPath && <Chatbot />}
     </div>
   )
 }

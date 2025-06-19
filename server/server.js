@@ -10,8 +10,15 @@ import productRouter from './routes/productRoute.js';
 import cartRouter from './routes/cartRoute.js';
 import addressRouter from './routes/addressRoute.js';
 import orderRouter from './routes/orderRoute.js';
+import chatRouter from './routes/chatRoute.js';
+import rateLimit from 'express-rate-limit';
+
+
+
+
 import { stripeWebhooks } from './controllers/orderController.js';
 import path from 'path'
+
 
 
 const app = express();
@@ -23,8 +30,18 @@ const port = process.env.PORT || 4001;
   connectCloudinary();
 })();
 
+const chatLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per window
+  message: "Too many requests from this IP, please try again later"
+});
+
+app.use('/api/chat', chatLimiter, chatRouter);
+
 // Serve static files from 'uploads' directory
 app.use('/uploads' , express.static(path.join(process.cwd(),'server', 'uploads')))
+
+app.use('/api/chat', chatRouter);
 
 // Allow multiple origins
 const allowdOrigins = [
