@@ -29,11 +29,11 @@ export const register = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,  // prevent javascript to access the cookie
       secure: process.env.NODE_ENV === "production", // use secure cookies in production
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // CSRF protection
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // CSRF protection
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days cookie expiration time
     });
 
-    return res.json({success: true, user: {email: user.email, name: user.name}});
+    return res.json({success: true, user: { _id  : user._id , email: user.email, name: user.name}});
     
   } catch (error) {
     console.error(error);
@@ -71,13 +71,13 @@ export const register = async (req, res) => {
       res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        sameSite:  "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
   
       return res.json({
         success: true,
-        user: { email: user.email, name: user.name },
+        user: { _id : user._id , email: user.email, name: user.name },
       });
     } catch (error) {
       console.error(error);
@@ -105,7 +105,7 @@ export const register = async (req, res) => {
       res.clearCookie("token", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        sameSite: "lax",
       });
       return res.json({ success: true, message: "Logged out successfully" });
     } catch (error) {

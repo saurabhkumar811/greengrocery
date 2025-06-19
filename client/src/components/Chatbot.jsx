@@ -48,11 +48,11 @@ const Chatbot = () => {
   return (
     <>
       {isOpen ? (
-        <div className="fixed bottom-24 right-6 w-80 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
+        <div className="fixed bottom-24 right-6 w-80 bg-white border border-gray-300 rounded-lg shadow-lg z-50 ">
           <div className="bg-primary text-white p-3 rounded-t-lg flex justify-between items-center">
             <h3 className="font-medium">GreenGrocery Assistant</h3>
             <button onClick={() => setIsOpen(false)}>
-              <img src={closeIcon} alt="Close" className="w-4 h-4" />
+              <img src={closeIcon} alt="Close" className="w-4 h-4 cursor-pointer" />
             </button>
           </div>
           
@@ -60,7 +60,7 @@ const Chatbot = () => {
            {messages.map((msg, i) => (
   <div key={i} className={`mb-3 flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
     {msg.sender === 'bot' && (
-      <img src={robotIcon} alt="Bot" className="w-6 h-6 rounded-full mr-2" />
+      <img src={robotIcon} alt="Bot" className="w-6 h-6 rounded-full mr-2 " />
     )}
     <div className={`inline-block p-2 rounded-lg max-w-xs ${
       msg.sender === 'user' 
@@ -99,7 +99,7 @@ const Chatbot = () => {
               className="bg-primary text-white p-2 rounded-r disabled:opacity-50"
               disabled={loading}
             >
-              <img src={sendIcon} alt="Send" className="w-5 h-5" />
+              <img src={sendIcon} alt="Send" className="w-5 h-5 cursor-pointer" />
             </button>
           </div>
         </div>
@@ -108,7 +108,7 @@ const Chatbot = () => {
           onClick={() => setIsOpen(true)}
           className="fixed bottom-6 right-6 w-14 h-14 bg-primary rounded-full flex items-center justify-center shadow-lg z-50"
         >
-          <img src={chatIcon} alt="Chat" className="w-6 h-6" />
+          <img src={chatIcon} alt="Chat" className="w-6 h-6 cursor-pointer" />
         </button>
       )}
     </>

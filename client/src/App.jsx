@@ -20,7 +20,6 @@ import Orders from './pages/seller/Orders'
 import Loading from './components/Loading'
 import Chatbot from './components/Chatbot';
 
-
 const App = () => {
 
 

@@ -19,6 +19,11 @@ const userSchema = new mongoose.Schema({
     type: Object,
     default: {}
   },
+  recentViews: [{
+  type: mongoose.Schema.Types.ObjectId, 
+  ref: 'Product'
+}]
+
 }, {minimize:false});
 
 const User = mongoose.models.user || mongoose.model("user", userSchema);

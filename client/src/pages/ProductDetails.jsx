@@ -7,7 +7,7 @@ const ProductDetails = () => {
 
   const {products, navigate, currency, addToCart} = useAppContext()
   const {id} = useParams()
-
+  const [fetchedproduct, setFetchedProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [thumbnail, setThumbnail] = useState(null);
   const product = products.find((item)=> item._id === id);
@@ -15,10 +15,19 @@ const ProductDetails = () => {
   useEffect(()=>{
    if(products.length > 0){
     let productsCopy = products.slice();
-    productsCopy = productsCopy.filter((item)=> product.category === item.category)
+   productsCopy = productsCopy.filter((item) => 
+  product && item.category === product.category && item._id !== product._id
+)
     setRelatedProducts(productsCopy.slice(0,5))
    }
   },[products])
+
+  useEffect(() => {
+  fetch(`/api/product/product/${id}`, { credentials: 'include' })
+    .then(res => res.json())
+    .then(data => setFetchedProduct(data));
+}, [id]);
+
 
   useEffect(()=>{
     setThumbnail(product?.images?.[0] ? product.images[0] : null)
@@ -29,7 +38,7 @@ const ProductDetails = () => {
           <p>
               <Link to={"/"}>Home</Link> /
               <Link to={"/products"}> Products</Link> /
-              <Link to={`/porducts/${product.category.toLowerCase()}`}> {product.category}</Link> /
+              <Link to={`/products/${product.category.toLowerCase()}`}> {product.category}</Link> /
               <span  className="text-primary"> {product.name}</span>
           </p>
 
@@ -53,7 +62,7 @@ const ProductDetails = () => {
 
                   <div className="flex items-center gap-0.5 mt-1">
                       {Array(5).fill('').map((_, i) => (
-                       <img src={i<4 ? assets.star_icon : assets.star_dull_icon} className="md:w-4 w-3.5"/>         
+                       < img key={i} src={i<4 ? assets.star_icon : assets.star_dull_icon} className="md:w-4 w-3.5"/>         
                       ))}
                       <p className="text-base ml-2">(4)</p>
                   </div>
