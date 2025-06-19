@@ -41,7 +41,20 @@ const Navbar = () => {
               <div className="hidden sm:flex items-center gap-8">
                   <NavLink to='/'>Home</NavLink>
                   <NavLink to='/products'>All Product</NavLink>
-                  <NavLink to='/'>Contact</NavLink>
+                  <a
+  href="#contact"
+  onClick={e => {
+    e.preventDefault();
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  }}
+  className="cursor-pointer"
+>
+  Contact
+</a>
+
                   
   
                   <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
@@ -87,7 +100,20 @@ const Navbar = () => {
                   { user &&
                   <NavLink to='/products' onClick={()=>setOpen(false)}>My Orders</NavLink>
                   }
-                  <NavLink to='/' onClick={()=>setOpen(false)}>Contact</NavLink>
+                 <a
+  href="#contact"
+  onClick={e => {
+    e.preventDefault();
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  }}
+  className="cursor-pointer"
+>
+  Contact
+</a>
+
 
                   {!user ? (
                      <button onClick={()=>{
