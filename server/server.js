@@ -46,7 +46,7 @@
 
   // Allow multiple origins
   const allowdOrigins = [
-    'http://localhost:5173']
+    'http://localhost:5173' ,'https://greengrocery-ashy.vercel.app/']
 
   app.post('/stripe', express.raw({type : 'application/json'}),stripeWebhooks)
 
