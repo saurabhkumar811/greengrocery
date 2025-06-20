@@ -1,6 +1,6 @@
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
-import stripe, { Stripe } from "stripe";
+import { Stripe } from "stripe";
 import User from "../models/user.js";
 import mongoose from "mongoose";
 
