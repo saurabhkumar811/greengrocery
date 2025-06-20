@@ -2,8 +2,8 @@ import express from 'express';
 import { upload } from '../configs/multer.js';
 import authSeller from '../middlewares/authSeller.js';
 import { addProduct, changeStock, productById, productList } from '../controllers/productController.js';
-import Product from '../models/Product.js';
-import User from '../models/User.js';
+import Product from '../models/product.js';
+import User from '../models/user.js';
 import authUser from '../middlewares/authUser.js';
 
 const productRouter = express.Router();

@@ -1,6 +1,6 @@
 import authUser from '../middlewares/authUser.js';
-import User from '../models/User.js';
-import Product from '../models/Product.js';
+import User from '../models/user.js';
+import Product from '../models/product.js';
 import express from 'express';
 
 const recommendationRouter = express.Router();
