@@ -28,5 +28,8 @@
     "stripe": "^18.0.0"
   },
   "keywords": [],
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@express-rate-limit/tsconfig": "^1.0.2"
+  }
 }
