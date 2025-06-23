@@ -18,15 +18,21 @@
   import path from 'path'
 
 
-
   const app = express();
   const port = process.env.PORT || 4001;
-
 
   (async () => {
     await connectDB();
     connectCloudinary();
   })();
+
+  // Allow multiple origins
+  const allowdOrigins = [
+    'http://localhost:5173' ,'https://greengrocery-ashy.vercel.app']
+
+     app.use(cors({origin: allowdOrigins, credentials: true}));
+  app.use(express.json());
+  app.use(cookieParser());
 
   const chatLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -44,17 +50,13 @@
 
   app.use('/api/chat', chatRouter);
 
-  // Allow multiple origins
-  const allowdOrigins = [
-    'http://localhost:5173' ,'https://greengrocery-ashy.vercel.app']
+  
 
   app.post('/stripe', express.raw({type : 'application/json'}),stripeWebhooks)
 
 
   // Midldleware configuration
-  app.use(express.json());
-  app.use(cookieParser());
-  app.use(cors({origin: allowdOrigins, credentials: true}));
+ 
   app.get('/', (req, res) => res.send('API is Working!'));
   app.use('/api/product', productRouter)
   app.use('/api/recommendations', recommendationRoutes);
