@@ -30,6 +30,7 @@
   const allowdOrigins = [
     'http://localhost:5173' ,'https://greengrocery-ashy.vercel.app']
 
+    
      app.use(cors({origin: allowdOrigins, credentials: true}));
   app.use(express.json());
   app.use(cookieParser());
