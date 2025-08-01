@@ -7,37 +7,35 @@ const recommendationRouter = express.Router();
 
 recommendationRouter.get('/personalized', authUser, async (req, res) => {
   try {
-    // Defensive: Check user exists
-    const user = await User.findById(req.user._id)
-      .populate({
-        path: 'recentViews',
-        model: 'Product'
-      });
+    const user = await User.findById(req.user._id).populate({
+      path: 'recentViews',
+      model: 'Product',
+      match: { category: { $ne: null } }, // Filter out products without category
+    });
 
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    // Defensive: Check recentViews is an array
-    const recentViews = Array.isArray(user.recentViews) ? user.recentViews : [];
-
+    const recentViews = user.recentViews || [];
     const recentProductIds = recentViews.map(p => p._id);
     const categories = [...new Set(recentViews.map(p => p.category).filter(Boolean))];
 
     let recommendations = [];
-    for (const category of categories) {
-      const products = await Product.find({
-        category,
-        _id: { $nin: recentProductIds }
-      }).limit(3);
+
+    // Use Promise.all to fetch recommendations in parallel
+    const allRecommendations = await Promise.all(categories.map(category =>
+      Product.find({ category, _id: { $nin: recentProductIds } }).limit(3)
+    ));
+
+    allRecommendations.forEach(products => {
       recommendations.push(...products);
-    }
+    });
 
     res.json({ recommendations: recommendations.slice(0, 10) });
   } catch (error) {
-    // Log error for debugging
     console.error("Recommendation error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
 
