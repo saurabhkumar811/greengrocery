@@ -28,7 +28,7 @@
 
   // Allow multiple origins
   const allowdOrigins = [
-    'http://localhost:5173' ,'https://greengrocery-2wt1.vercel.app/']
+    'http://localhost:5173' ,'https://greengrocery-iqfr.vercel.app']
 
 
     app.use(express.json());
