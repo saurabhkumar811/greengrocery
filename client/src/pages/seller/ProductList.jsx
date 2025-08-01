@@ -7,17 +7,20 @@ const ProductList = () => {
   const { products, currency, axios, fetchProducts } = useAppContext()
 
   const toggleStock = async (id , inStock)=>{
-    try {
-        const {data} = await axios.post("/api/product/stock", {id, inStock});
-        if(data.success){
-            fetchProducts();
-            toast.success(data.message);
-        }else{
-            toast.error(data.message);
-        }
-    } catch (error) {
-        toast.error(error.message);
-    }
+    // try {
+    //     const {data} = await axios.post("/api/product/stock", {id, inStock});
+    //     if(data.success){
+    //         fetchProducts();
+    //         toast.success(data.message);
+    //     }else{
+    //         toast.error(data.message);
+    //     }
+    // } catch (error) {
+    //     toast.error(error.message);
+    // }
+
+    toast('Demo mode: Changing product stock is disabled. You can explore the interface, but no changes will be saved.', { icon: '🔒' });
+
   }
   return (
     <div className="no-scrollbar flex-1 h-[95vh] overflow-y-scroll flex flex-col justify-between">
