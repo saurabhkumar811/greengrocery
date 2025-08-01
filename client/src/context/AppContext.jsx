@@ -1,183 +1,176 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { dummyProducts } from '../assets/assets';                                               
 import toast from 'react-hot-toast';
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+axios.defaults.baseURL = backendUrl;
 
 export const AppContext = createContext();
 
-export const AppContextProvider = ({children}) => {
-
+export const AppContextProvider = ({ children }) => {
   const currency = import.meta.env.VITE_CURRENCY;
-
   const navigate = useNavigate();
-  const [user, setUser] = useState(null)
-  const [isSeller, setIsSeller] = useState(false)
-  const [showUserLogin, setShowUserLogin] = useState(false)
-  const [products, setProducts] = useState([])
 
-  const [cartItems, setCartItems] = useState({})
-  const [searchQuery, setSearchQuery] = useState({})
+  const [user, setUser] = useState(null);
+  const [isSeller, setIsSeller] = useState(false);
+  const [showUserLogin, setShowUserLogin] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [cartItems, setCartItems] = useState({});
+  const [searchQuery, setSearchQuery] = useState({});
 
-
-  // Fetch User Auth , User Data and Cart Items
-
+  // Fetch User Auth
   const fetchUser = async () => {
     try {
-      const {data} = await axios.get("/api/user/is-auth");
-      if(data.success){
+      const { data } = await axios.get(`${backendUrl}/api/user/is-auth`);
+      if (data.success) {
         setUser(data.user);
-        setCartItems(data.user.cartItems);
+        setCartItems(data.user.cartItems || {});
       }
     } catch (error) {
       setUser(null);
     }
-  }
+  };
 
-
-  // Fetch Seller Status
+  // Fetch Seller Auth
   const fetchSeller = async () => {
     try {
-      const {data} = await axios.get("/api/seller/is-auth");
-      if(data.success){
-        setIsSeller(true);
-      }else{
-        setIsSeller(false);
-      }
+      const { data } = await axios.get(`${backendUrl}/api/seller/is-auth`);
+      setIsSeller(data.success);
     } catch (error) {
       setIsSeller(false);
     }
-  }
+  };
 
-
-// Fetch All Products
+  // Fetch All Products
   const fetchProducts = async () => {
     try {
-      const {data} = await axios.get("/api/product/list");
-      if(data.success){
+      const { data } = await axios.get(`${backendUrl}/api/product/list`);
+      if (data.success) {
         setProducts(data.products);
-      }else{
+      } else {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
-  }
-    
+  };
 
   // Add Product to Cart
- const addToCart = (itemId) => {
-  let cartData = structuredClone(cartItems); 
-  if(cartData[itemId]){
-    cartData[itemId] += 1;
-  }else{
-    cartData[itemId] = 1;
-  }
-  setCartItems(cartData);
-  toast.success("Added to Cart")
- }
+  const addToCart = (itemId) => {
+    let cartData = structuredClone(cartItems);
+    cartData[itemId] = (cartData[itemId] || 0) + 1;
+    setCartItems(cartData);
+    toast.success("Added to Cart");
+  };
 
-// Update Cart Item Quantity
+  // Update Cart Item Quantity
+  const updateCartItem = (itemId, quantity) => {
+    let cartData = structuredClone(cartItems);
+    cartData[itemId] = quantity;
+    setCartItems(cartData);
+    toast.success("Cart Updated");
+  };
 
- const updateCartItem = (itemId, quantity) => {
-   let cartData = structuredClone(cartItems);
-   cartData[itemId] = quantity;
-   setCartItems(cartData)
-   toast.success("Cart Updated")
- }
-
- // Remove Porduct form Cart 
-
- const removeFromCart = (itemId) => {
-  let cartData = structuredClone(cartItems);
-  if(cartData[itemId]){
-    cartData[itemId] -= 1;
-    if(cartData[itemId] === 0){
-      delete cartData[itemId];
+  // Remove Product from Cart
+  const removeFromCart = (itemId) => {
+    let cartData = structuredClone(cartItems);
+    if (cartData[itemId]) {
+      cartData[itemId] -= 1;
+      if (cartData[itemId] <= 0) {
+        delete cartData[itemId];
+      }
     }
-  }
-  toast.success("Remove form Cart")
-  setCartItems(cartData)
- }
+    setCartItems(cartData);
+    toast.success("Removed from Cart");
+  };
 
- // Get Cart Item Count
- const getCartCount = () => {
-  let totalCount = 0;
-  for(const item in cartItems){
-    totalCount += cartItems[item]
-  }
-  return totalCount;
- }
+  // Get Cart Item Count
+  const getCartCount = () => {
+    return Object.values(cartItems).reduce((a, b) => a + b, 0);
+  };
 
-// Get Cart Total Amount
- const getCartAmount = ()=> {
-   let totalAmount = 0;
-   for(const itemId in cartItems){
-    let itemInfo = products.find((product)=> product._id === itemId);
-    if(itemInfo  && cartItems[itemId] > 0){
-      totalAmount += itemInfo.offerPrice * cartItems[itemId]
+  // Get Cart Total Amount
+  const getCartAmount = () => {
+    let total = 0;
+    for (const itemId in cartItems) {
+      const item = products.find(p => p._id === itemId);
+      if (item) {
+        total += item.offerPrice * cartItems[itemId];
+      }
     }
-   }
-   return Math.floor(totalAmount * 100) / 100;
- }
+    return Math.floor(total * 100) / 100;
+  };
 
-
-  // Fetch user, seller, and products on mount
+  // Fetch initial data on mount
   useEffect(() => {
     fetchUser();
     fetchSeller();
     fetchProducts();
   }, []);
 
-
-// Update Database Cart Items
-  useEffect(()=>{
+  // Sync cart with backend
+  useEffect(() => {
     const updateCart = async () => {
       try {
-        const {data} = await axios.post("/api/cart/update", {cartItems});
-        if(!data.success){
-          toast.error(data.message);
-        }
+        const { data } = await axios.post(`${backendUrl}/api/cart/update`, { cartItems });
+        if (!data.success) toast.error(data.message);
       } catch (error) {
         toast.error(error.message);
       }
-    }
-    if(user){
-      updateCart();
-    }
-  },[cartItems])
+    };
+    if (user) updateCart();
+  }, [cartItems]);
 
+  // Clean up cart if products get removed
   useEffect(() => {
-  if (!products.length) return;
-  const validProductIds = products.map((p) => p._id);
-  let updatedCart = { ...cartItems };
-  let changed = false;
-  for (const key in cartItems) {
-    if (!validProductIds.includes(key)) {
-      delete updatedCart[key];
-      changed = true;
+    if (!products.length) return;
+    const validIds = products.map(p => p._id);
+    const updatedCart = {};
+    let changed = false;
+    for (const id in cartItems) {
+      if (validIds.includes(id)) {
+        updatedCart[id] = cartItems[id];
+      } else {
+        changed = true;
+      }
     }
-  }
-  if (changed) {
-    setCartItems(updatedCart);
-    toast.error("Some products in your cart were removed because they are no longer available.");
-  }
-}, [products]);
+    if (changed) {
+      setCartItems(updatedCart);
+      toast.error("Some products were removed from your cart.");
+    }
+  }, [products]);
 
+  const value = {
+    navigate,
+    user,
+    setUser,
+    isSeller,
+    setIsSeller,
+    showUserLogin,
+    setShowUserLogin,
+    products,
+    currency,
+    addToCart,
+    updateCartItem,
+    removeFromCart,
+    cartItems,
+    searchQuery,
+    setSearchQuery,
+    getCartCount,
+    getCartAmount,
+    axios,
+    fetchProducts,
+    setCartItems
+  };
 
-  const value = {navigate, user, setUser, 
-    setIsSeller, isSeller,showUserLogin, 
-    setShowUserLogin, products, currency, 
-    addToCart, updateCartItem, removeFromCart,
-    cartItems, searchQuery, setSearchQuery, getCartAmount, getCartCount, axios, fetchProducts, setCartItems }
-  return <AppContext.Provider value={value}>
-    {children}
-  </AppContext.Provider>
-}
+  return (
+    <AppContext.Provider value={value}>
+      {children}
+    </AppContext.Provider>
+  );
+};
 
-export const useAppContext = () => {
-  return useContext(AppContext)
-}
+export const useAppContext = () => useContext(AppContext);
