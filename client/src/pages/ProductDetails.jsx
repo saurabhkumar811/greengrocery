@@ -23,7 +23,7 @@ const ProductDetails = () => {
   },[products])
 
   useEffect(() => {
-  fetch(`/api/product/product/${id}`, { credentials: 'include' })
+  fetch(`${import.meta.env.VITE_BACKEND_URL}/api/product/product/${id}`, { credentials: 'include' })
     .then(res => res.json())
     .then(data => setFetchedProduct(data));
 }, [id]);
