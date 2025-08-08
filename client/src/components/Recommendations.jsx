@@ -6,7 +6,7 @@ function Recommendations() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/recommendations/personalized', { credentials: 'include' })
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/recommendations/personalized`, { credentials: 'include' })
       .then(res => {
         if (res.status === 401) {
           return { recommendations: [] };
